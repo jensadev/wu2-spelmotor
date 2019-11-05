@@ -19,11 +19,12 @@ let offCanvas = document.createElement('canvas');
 let offCtx = offCanvas.getContext('2d');
 
 const sources = {
-    map: 'img/maps/map1.png',
+    map1: 'img/maps/map1.png',
+    map4: 'img/maps/map4.png',
     grass: 'img/grass.png',
     lava: 'img/lava.png',
     ground: 'img/ground.png',
-    player: 'img/player.png',
+    player: 'img/sprites/player.png',
     item: 'img/item.png'
 };
 
@@ -44,14 +45,17 @@ function loadImages(sources, callback) {
     }
 }
 
-let game;
-
 loadImages(sources, function() {
-    game = runGame(images.map);
+    runGame(images.map1);
 });
 
 async function runGame(plans) {
     let status = await runLevel(new Level(plans, offCtx, levelKey));
+    if (status == "won") {
+        console.log("You won");
+    } else if (status == "lost") {
+        console.log("Slain by lava");
+    }
 }
 
 function runLevel(level) {
