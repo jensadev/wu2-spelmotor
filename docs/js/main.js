@@ -2,31 +2,11 @@ let width = 1024;
 let height = 768;
 let scale = 32;
 
-const levelKey = {
-    "0,0,0": "empty",
-    "255,255,0": "grass",
-    "255,0,0": Lava,
-    "0,255,0": Player,
-    "0,255,255": Item,
-    "255,0,255": "ground",
-    "0,0,255": "grass"
-};
-
 let images = [];
-let player;
 
 let offCanvas = document.createElement('canvas');
 let offCtx = offCanvas.getContext('2d');
-
-const sources = {
-    map1: 'img/maps/map1.png',
-    map4: 'img/maps/map4.png',
-    grass: 'img/grass.png',
-    lava: 'img/lava.png',
-    ground: 'img/ground.png',
-    player: 'img/sprites/player.png',
-    item: 'img/item.png'
-};
+let body = document.getElementsByTagName("body")[0];
 
 function loadImages(sources, callback) {
     let loadedImages = 0;
@@ -41,16 +21,49 @@ function loadImages(sources, callback) {
                 callback(images);
             }
         };
-        images[src].src = sources[src];
+        images[src].src = sources[src].src;
+        sources[src].image = images[src];
     }
 }
 
 loadImages(sources, function() {
-    runGame(images.map1);
+    // double preload profit?
+    for(let src in sources) {
+        if (sources[src].repeat) {
+            console.log(src)
+            offCanvas.width = sources[src].srcWidth;
+            offCanvas.height = sources[src].srcHeight;
+            offCtx.drawImage(sources[src].image, sources[src].offsetX, sources[src].offsetY, sources[src].srcWidth, sources[src].srcHeight, 0, 0, sources[src].srcWidth, sources[src].srcHeight);
+            let a = new Image();
+            a.src = offCanvas.toDataURL('png');
+
+            offCanvas.width = width;
+            offCanvas.height = sources[src].srcHeight;
+
+            let pattern = offCtx.createPattern(a, sources[src].repeat);
+            offCtx.fillStyle = pattern;
+            offCtx.fillRect(0, 0, offCanvas.width, offCanvas.height);
+            let b = new Image();
+            b.src = offCanvas.toDataURL('png');
+
+            sources[src].image = b;
+            
+        } else if (sources[src].offsetX || sources[src].offsetY) {
+            offCanvas.width = sources[src].srcWidth;
+            offCanvas.height = sources[src].srcHeight;
+            offCtx.drawImage(sources[src].image, sources[src].offsetX, sources[src].offsetY, sources[src].srcWidth, sources[src].srcHeight, 0, 0, sources[src].srcWidth, sources[src].srcHeight);
+            // images[src].src = offCanvas.toDataURL('png');
+            let a = new Image();
+            a.src = offCanvas.toDataURL('png');
+            sources[src].image = a;
+        }
+    }
+    runGame(sources.map.image);
 });
 
 async function runGame(plans) {
-    let status = await runLevel(new Level(plans, offCtx, levelKey));
+    let offMapCtx = new OffscreenCanvas(sources.map.image.width, sources.map.image.height).getContext('2d');
+    let status = await runLevel(new Level(plans, offMapCtx, levelKey));
     if (status == "won") {
         console.log("You won");
     } else if (status == "lost") {
@@ -59,6 +72,7 @@ async function runGame(plans) {
 }
 
 function runLevel(level) {
+    console.log(level)
     let stage = document.getElementById('stage');
     stage.setAttribute("style", "width:" + width + "px;");
     let display = new Canvas(width, height, stage, level);
@@ -110,8 +124,8 @@ function trackKeys(keys) {
     return down;
 }
 
-let arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp", "w", "a", "d"]);
-let gravity = 30;
+let arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp", "w", "a", "d", "g"]);
+let gravity = 15;
 
 function overlap(actor1, actor2) {
     return actor1.pos.x + actor1.size.x > actor2.pos.x &&

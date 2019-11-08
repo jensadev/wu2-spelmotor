@@ -25,9 +25,8 @@ class Item
         let filtered = state.actors.filter(a => a != this);
         let status = state.status;
         let score = state.score;
-        console.log(score)
         if (!filtered.some(a => a.type == "item")) status = "won";
-        return new State(state.level, filtered, status, score++);
+        return new State(state.level, filtered, status, ++score);
     }
 
     update = function(time, state)

@@ -3,7 +3,7 @@ class Player
     constructor(pos, speed)
     {
         this.pos = pos;
-        this.size = new Vector(1, 1);
+        this.size = new Vector(2, 2);
         this.speed = speed;
         this.xOverlap = 4;
         this.xSpeed = 8;
@@ -27,16 +27,18 @@ class Player
         let pos = this.pos;
         let movedX = pos.plus(new Vector(currentXSpeed * time, 0));
 
-        if (!state.level.touches(movedX, this.size, "grass")) {
+        if (!state.level.touches(movedX, this.size, groundTypes)) {
             pos = movedX;
         }
-      
+
+        console.log(state.level.touches(pos, this.size, "rock"));
+
         let currentYSpeed = this.speed.y + time * gravity;
         let movedY = pos.plus(new Vector(0, currentYSpeed * time));
 
-        if (!state.level.touches(movedY, this.size, "grass")) {
+        if (!state.level.touches(movedY, this.size, groundTypes)) {
             pos = movedY;
-        } else if (keys.ArrowUp || keys.w && currentYSpeed > 0) {
+        } else if ( (keys.ArrowUp || keys.w) && currentYSpeed > 0) {
             currentYSpeed = -this.ySpeed;
         } else {
             currentYSpeed = 0;

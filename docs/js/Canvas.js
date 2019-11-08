@@ -19,9 +19,15 @@ class Canvas {
         this.actorsLayer.height = this.height;
         this.actorsCtx = this.actorsLayer.getContext("2d");
 
+        this.uiLayer = document.createElement("canvas");
+        this.uiLayer.width = this.width;
+        this.uiLayer.height = this.height;
+        this.uiCtx = this.uiLayer.getContext("2d");
+
         parent.appendChild(this.bgLayer);
         parent.appendChild(this.mapLayer);
         parent.appendChild(this.actorsLayer);
+        parent.appendChild(this.uiLayer);
 
         this.flipPlayer = false;
 
@@ -72,28 +78,53 @@ class Canvas {
                     let screenX = (x - left) * scale;
                     let screenY = (y - top) * scale;
 
-                    //console.log(screenX, screenY)
-
-                    //let tileX = tile == "lava" ? scale : 0;
-                    if(tile === "ground") {
-                        this.mapCtx.drawImage(images.ground, screenX, screenY, scale, scale);
-                    } else if (tile === "grass") {
-                        this.mapCtx.drawImage(images.grass, screenX, screenY, scale, scale);
-                    }
+                    if(tile !== undefined)
+                        this.mapCtx.drawImage(sources[tile].image, screenX, screenY, scale, scale);
                 }
-                // this.cx.drawImage(otherSprites,
-                //                 tileX,         0, scale, scale,
-                //                 screenX, screenY, scale, scale);
             }
         }
+    }
+
+    drawBg = function(status)
+    {
+        let { left, top, width, height } = this.viewport;
+        if (status == "won") {
+            this.bgCtx.fillStyle = "rgb(68, 191, 255)";
+        } else if (status == "lost") {
+            this.bgCtx.fillStyle = "rgb(44, 136, 214)";
+        } else {
+            this.bgCtx.fillStyle = "rgb(52, 166, 251)";
+        }
+        this.bgCtx.fillRect(0, 0, this.width, this.height);
+        let _top = (height - top) * 32;
+        let _left = left * 32;
+        this.bgCtx.drawImage(sources.mountain.image, 512, _top + 128, sources.mountain.width, sources.mountain.height);
+        this.bgCtx.drawImage(sources.mountain.image, 128, _top + 128, sources.mountain.width, sources.mountain.height);
+        this.bgCtx.drawImage(sources.mountains.image, left, _top + 128, this.width, sources.mountains.height);
+        this.bgCtx.drawImage(sources.cloud1.image, (_left / 50) + 128, _top + 128, sources.cloud1.width, sources.cloud1.height);
+        this.bgCtx.drawImage(sources.cloud2.image, (_left / 30) + 320, _top + 32, sources.cloud2.width, sources.cloud2.height);
+        this.bgCtx.drawImage(sources.cloud3.image, (_left / 10) + 640, _top + 96, sources.cloud3.width, sources.cloud3.height);
+        this.bgCtx.drawImage(sources.cloud1.image, (_left / 55) + 480, _top - 320, sources.cloud1.width, sources.cloud1.height);
+        this.bgCtx.drawImage(sources.cloud2.image, (_left / 35) + 768, _top - 128, sources.cloud2.width, sources.cloud2.height);
+        this.bgCtx.drawImage(sources.cloud3.image, (_left / 15) + 32, _top - 256, sources.cloud3.width, sources.cloud3.height);
     }
 
     syncState = function(state)
     {
         this.updateViewport(state);
-        this.clearDisplay(state.status);
+        this.clearDisplay(this.mapCtx);
+        this.drawBg(state.status);
         this.drawMap(state.level);
         this.drawActors(state.actors);
+        this.drawUi(state);
+    }
+
+    drawUi = function(state)
+    {
+        this.uiCtx.clearRect(0, 0, 80, 80);
+        this.uiCtx.fillStyle = "black";
+        this.uiCtx.font = '20px sans-serif';
+        this.uiCtx.fillText(state.score, 20, 20);
     }
 
     clear()
@@ -103,16 +134,8 @@ class Canvas {
         this.actorsLayer.remove();
     }
 
-    clearDisplay = function() {
-        if (status == "won") {
-            this.bgCtx.fillStyle = "rgb(68, 191, 255)";
-        } else if (status == "lost") {
-            this.bgCtx.fillStyle = "rgb(44, 136, 214)";
-        } else {
-            this.bgCtx.fillStyle = "rgb(52, 166, 251)";
-        }
-        this.bgCtx.fillRect(0, 0, this.width, this.height);
-        this.mapCtx.clearRect(0, 0, this.width, this.height);
+    clearDisplay = function(ctx) {
+        ctx.clearRect(0, 0, this.width, this.height);
     }
 
     drawActors = function(actors)
@@ -126,7 +149,7 @@ class Canvas {
                 this.drawPlayer(actor, x, y, width, height);
             } else {
 //                let tileX = (actor.type == "coin" ? 2 : 1) * scale;
-                this.mapCtx.drawImage(actor.type == "lava" ? images.lava : images.item, x, y, width, height);          
+                this.mapCtx.drawImage(sources[actor.type].image, x, y, width, height);          
             }
         }
     }
@@ -134,20 +157,20 @@ class Canvas {
     drawPlayer = function(player, x, y, width, height)
     {
         // let playerOverlap = 4;
-        // width += playerOverlap * 2;
-        // // height += playerOverlap * 2;
+        // width += playerOverlap * 1;
+        // height += playerOverlap * 3;
         // x -= playerOverlap;
         // y -= playerOverlap;
 
         if (player.speed.x != 0) {
-            this.flipPlayer = player.speed.x < 0;
+            this.flipPlayer = player.speed.x > 0;
         }
 
         let tile = 1;
         if (player.speed.y != 0) {
-            tile = 3;
+            tile = 1;
         } else if (player.speed.x != 0) {
-            tile = Math.floor(Date.now() / 60) % 3;
+            tile = Math.floor(Date.now() / 60) % 9;
         }
 
         this.actorsCtx.clearRect(this.prevX , this.prevY , width, height);
@@ -155,9 +178,10 @@ class Canvas {
         if (this.flipPlayer) {
             flipHorizontally(this.actorsCtx, x + width / 2);
         }
-        let tileX = tile * 32;
+        let tileX = tile * sources.player.width;
         
-        this.actorsCtx.drawImage(images.player, tileX, 0, width, height, x, y, width, height);
+        this.actorsCtx.drawImage(sources.player.image, tileX, 0, sources.player.width, sources.player.height, x, y, width, height);
+        //this.actorsCtx.drawImage(sources.player.image, x, y, width, height);
         this.actorsCtx.restore();
         this.prevY = y;
         this.prevX = x;

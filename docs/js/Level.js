@@ -11,6 +11,7 @@ class Level
         this.startActors = [];
         
         this.ctx.drawImage(this.image, 0, 0);
+
         for(let y = 0; y < this.height; y++) {
             for(let x = 0; x < this.width; x++) {
                 let pixel = this.ctx.getImageData(x, y, 1, 1).data;
@@ -33,20 +34,22 @@ class Level
         return arr;
     }
 
-    touches = function(pos, size, type)
+    touches = function(pos, size, types)
     {
         var xStart = Math.floor(pos.x);
         var xEnd = Math.ceil(pos.x + size.x);
         var yStart = Math.floor(pos.y);
         var yEnd = Math.ceil(pos.y + size.y);
-      
-        for (var y = yStart; y < yEnd; y++) {
-            for (var x = xStart; x < xEnd; x++) {
-                let isOutside = x < 0 || x >= this.width ||
-                                y < 0 || y >= this.height;
-                let here = isOutside ? "ground" : this.layout[y][x];
-                if (here == type) return true;
-            }
+
+        for(let i = 0; i < types.length; i++) {
+            for (var y = yStart; y < yEnd; y++) {
+                for (var x = xStart; x < xEnd; x++) {
+                    let isOutside = x < 0 || x >= this.width ||
+                                    y < 0 || y >= this.height;
+                    let here = isOutside ? "grass" : this.layout[y][x];
+                    if (here == types[i]) return true;
+                }
+            }    
         }
         return false;
     }
