@@ -31,7 +31,7 @@ class Player
             pos = movedX;
         }
 
-        console.log(state.level.touches(pos, this.size, "rock"));
+        //console.log(state.level.touches(pos, this.size, "rock"));
 
         let currentYSpeed = this.speed.y + time * gravity;
         let movedY = pos.plus(new Vector(0, currentYSpeed * time));

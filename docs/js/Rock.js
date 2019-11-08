@@ -15,8 +15,13 @@ class Rock
         return new Rock(pos);
     }
 
-    collide = function(state)
+    collide = function(state, keys)
     {
+        if (keys.g) {
+            console.log("GRAB ROCK ZOG ZOG");
+            let filtered = state.actors.filter(a => a != this);
+            return new State(state.level, filtered, state.status, state.score);
+        }
         return state;
     }
 

@@ -33,7 +33,7 @@ class State
       
         for (let actor of actors) {
             if (actor != player && overlap(actor, player)) {
-                    newState = actor.collide(newState);
+                    newState = actor.collide(newState, keys);
             }
         }
 

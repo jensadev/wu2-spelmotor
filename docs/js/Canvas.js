@@ -100,7 +100,8 @@ class Canvas {
         let _left = left * 32;
         this.bgCtx.drawImage(sources.mountain.image, 512, _top + 128, sources.mountain.width, sources.mountain.height);
         this.bgCtx.drawImage(sources.mountain.image, 128, _top + 128, sources.mountain.width, sources.mountain.height);
-        this.bgCtx.drawImage(sources.mountains.image, left, _top + 128, this.width, sources.mountains.height);
+        this.bgCtx.drawImage(sources.mountains.image, left + 64, _top + 128, sources.mountains.width, sources.mountains.height);
+        this.bgCtx.drawImage(sources.mountains.image, left + 640, _top + 128, sources.mountains.width, sources.mountains.height);
         this.bgCtx.drawImage(sources.cloud1.image, (_left / 50) + 128, _top + 128, sources.cloud1.width, sources.cloud1.height);
         this.bgCtx.drawImage(sources.cloud2.image, (_left / 30) + 320, _top + 32, sources.cloud2.width, sources.cloud2.height);
         this.bgCtx.drawImage(sources.cloud3.image, (_left / 10) + 640, _top + 96, sources.cloud3.width, sources.cloud3.height);

@@ -29,26 +29,27 @@ function loadImages(sources, callback) {
 loadImages(sources, function() {
     // double preload profit?
     for(let src in sources) {
-        if (sources[src].repeat) {
-            console.log(src)
-            offCanvas.width = sources[src].srcWidth;
-            offCanvas.height = sources[src].srcHeight;
-            offCtx.drawImage(sources[src].image, sources[src].offsetX, sources[src].offsetY, sources[src].srcWidth, sources[src].srcHeight, 0, 0, sources[src].srcWidth, sources[src].srcHeight);
-            let a = new Image();
-            a.src = offCanvas.toDataURL('png');
+        // if (sources[src].repeat) {
+        //     console.log(src)
+        //     offCanvas.width = sources[src].srcWidth;
+        //     offCanvas.height = sources[src].srcHeight;
+        //     offCtx.drawImage(sources[src].image, sources[src].offsetX, sources[src].offsetY, sources[src].srcWidth, sources[src].srcHeight, 0, 0, sources[src].srcWidth, sources[src].srcHeight);
+        //     let a = new Image();
+        //     a.src = offCanvas.toDataURL('png');
 
-            offCanvas.width = width;
-            offCanvas.height = sources[src].srcHeight;
+        //     offCanvas.width = width;
+        //     offCanvas.height = sources[src].srcHeight;
 
-            let pattern = offCtx.createPattern(a, sources[src].repeat);
-            offCtx.fillStyle = pattern;
-            offCtx.fillRect(0, 0, offCanvas.width, offCanvas.height);
-            let b = new Image();
-            b.src = offCanvas.toDataURL('png');
+        //     let pattern = offCtx.createPattern(a, sources[src].repeat);
+        //     offCtx.fillStyle = pattern;
+        //     offCtx.fillRect(0, 0, offCanvas.width, offCanvas.height);
+        //     let b = new Image();
+        //     b.src = offCanvas.toDataURL('png');
 
-            sources[src].image = b;
+        //     sources[src].image = b;
             
-        } else if (sources[src].offsetX || sources[src].offsetY) {
+        // } else 
+        if (sources[src].offsetX || sources[src].offsetY) {
             offCanvas.width = sources[src].srcWidth;
             offCanvas.height = sources[src].srcHeight;
             offCtx.drawImage(sources[src].image, sources[src].offsetX, sources[src].offsetY, sources[src].srcWidth, sources[src].srcHeight, 0, 0, sources[src].srcWidth, sources[src].srcHeight);
