@@ -149,7 +149,6 @@ class Canvas {
             if (actor.type == "player") {
                 this.drawPlayer(actor, x, y, width, height);
             } else {
-//                let tileX = (actor.type == "coin" ? 2 : 1) * scale;
                 this.mapCtx.drawImage(sources[actor.type].image, x, y, width, height);          
             }
         }
@@ -168,8 +167,10 @@ class Canvas {
         }
 
         let tile = 1;
+        let jump = 0;
         if (player.speed.y != 0) {
-            tile = 1;
+            tile = Math.floor(Date.now() / 60) % 13;
+            jump = 1;
         } else if (player.speed.x != 0) {
             tile = Math.floor(Date.now() / 60) % 9;
         }
@@ -177,14 +178,20 @@ class Canvas {
         this.actorsCtx.clearRect(this.prevX , this.prevY , width, height);
         this.actorsCtx.save();
         if (this.flipPlayer) {
-            flipHorizontally(this.actorsCtx, x + width / 2);
+            this.flipHorizontally(this.actorsCtx, x + width / 2);
         }
         let tileX = tile * sources.player.width;
+        let tileY = jump * sources.player.height;
         
-        this.actorsCtx.drawImage(sources.player.image, tileX, 0, sources.player.width, sources.player.height, x, y, width, height);
-        //this.actorsCtx.drawImage(sources.player.image, x, y, width, height);
+        this.actorsCtx.drawImage(sources.player.image, tileX, tileY, sources.player.width, sources.player.height, x, y, width, height);
         this.actorsCtx.restore();
         this.prevY = y;
         this.prevX = x;
+    }
+
+    flipHorizontally = function(ctx, around) {
+        ctx.translate(around, 0);
+        ctx.scale(-1, 1);
+        ctx.translate(-around, 0);
     }
 }

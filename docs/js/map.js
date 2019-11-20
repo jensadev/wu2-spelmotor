@@ -23,8 +23,8 @@ let sources = {
     // item: 'img/item.png',
     player: {
         src: 'img/sprites/cavedude_side.png',
-        srcWidth: 864,
-        srcHeight: 96,
+        srcWidth: 1248,
+        srcHeight: 186,
         width: 96,
         height: 96,
         offsetX: 0,
@@ -93,7 +93,7 @@ let sources = {
         offsetX: 320,
         offsetY: 480
     },
-    map: {src: 'img/maps/cavedude_map.png'},
+    map: {src: 'img/maps/tower.png'},
     mountains: {
         src: 'img/sprites/cavedude_side.png',
         srcWidth: 352,

@@ -36,13 +36,22 @@ class Player
         let currentYSpeed = this.speed.y + time * gravity;
         let movedY = pos.plus(new Vector(0, currentYSpeed * time));
 
+        if (currentYSpeed)
+
         if (!state.level.touches(movedY, this.size, groundTypes)) {
             pos = movedY;
         } else if ( (keys.ArrowUp || keys.w) && currentYSpeed > 0) {
+            if (currentYSpeed > 25) {
+                console.log("ouch cant dodge by uparrow"); // call on function for taking damage                
+            }
             currentYSpeed = -this.ySpeed;
         } else {
+            if (currentYSpeed > 25) {
+                console.log("ouch"); // call on function for taking damage                
+            }
             currentYSpeed = 0;
         }
+
         return new Player(pos, new Vector(currentXSpeed, currentYSpeed));
     }
 }
