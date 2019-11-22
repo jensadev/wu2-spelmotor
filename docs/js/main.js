@@ -8,7 +8,7 @@ let offCanvas = document.createElement('canvas');
 let offCtx = offCanvas.getContext('2d');
 let body = document.getElementsByTagName("body")[0];
 
-let arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp", "w", "a", "d", "g"]);
+let arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp", "Space", "KeyW", "KeyA", "KeyD", "KeyG"]);
 let gravity = 24;
 
 function loadImages(sources, callback) {
@@ -36,23 +36,32 @@ loadImages(sources, function() {
             offCanvas.width = sources[src].srcWidth;
             offCanvas.height = sources[src].srcHeight;
             offCtx.drawImage(sources[src].image, sources[src].offsetX, sources[src].offsetY, sources[src].srcWidth, sources[src].srcHeight, 0, 0, sources[src].srcWidth, sources[src].srcHeight);
-            // images[src].src = offCanvas.toDataURL('png');
             let a = new Image();
             a.src = offCanvas.toDataURL('png');
             sources[src].image = a;
+            sources[src].color = getRandomColor();
         }
     }
-    runGame(sources.map.image);
+    runGame(sources.map1.image);
 });
 
 async function runGame(plans) {
-    let offMapCtx = new OffscreenCanvas(sources.map.image.width, sources.map.image.height).getContext('2d');
-    let status = await runLevel(new Level(plans, offMapCtx, levelKey));
+    
+    // let offMapCtx = new OffscreenCanvas(sources.map.image.width, sources.map.image.height).getContext('2d');
+    // let status = await runLevel(new Level(plans, offMapCtx, levelKey));
+    offCanvas.width = plans.width;
+    offCanvas.height = plans.height;
+    offCtx.clearRect(0, 0, plans.width, plans.height);
+    let status = await runLevel(new Level(plans, offCtx, levelKey));
     if (status == "won") {
         console.log("You won");
     } else if (status == "lost") {
         console.log("Slain by lava");
     }
+    window.addEventListener("click", function temp() {
+        runGame(sources.map1.image)
+        window.removeEventListener("click", temp, false);
+    }, false);
 }
 
 function runLevel(level) {
@@ -61,6 +70,7 @@ function runLevel(level) {
     stage.setAttribute("style", "width:" + width + "px;");
     let display = new Canvas(width, height, stage, level);
     let state = State.start(level);
+    console.log(state)
     return new Promise(resolve => {
         runAnimation(time => {
             state = state.update(time, arrowKeys);
@@ -92,8 +102,9 @@ function runAnimation(frameFunc) {
 function trackKeys(keys) {
     let down = Object.create(null);
     function track(event) {
-        if (keys.includes(event.key)) {
-            down[event.key] = event.type == "keydown";
+        
+        if (keys.includes(event.code)) {
+            down[event.code] = event.type == "keydown";
             event.preventDefault();
         }
     }
@@ -102,9 +113,10 @@ function trackKeys(keys) {
     return down;
 }
 
-function overlap(actor1, actor2) {
-    return actor1.pos.x + actor1.size.x > actor2.pos.x &&
-           actor1.pos.x < actor2.pos.x + actor2.size.x &&
-           actor1.pos.y + actor1.size.y > actor2.pos.y &&
-           actor1.pos.y < actor2.pos.y + actor2.size.y;
-  }
+// färgslumpare
+function getRandomColor() {
+    let r = Math.round(Math.random() * 255);
+    let g = Math.round(Math.random() * 255);
+    let b = Math.round(Math.random() * 255);
+    return "rgb(" + r + "," + g + "," + b + ")";
+}

@@ -20,7 +20,7 @@ class Level
                 if (typeof type == "string") {
                     this.layout[y][x] = type;
                 } else {
-                    this.startActors.push(type.create(new Vector(x, y)));
+                    this.startActors.push(type.create(new Vector(x, y), color));
                 }
             }
         }

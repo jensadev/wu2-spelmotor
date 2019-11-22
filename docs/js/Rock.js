@@ -1,8 +1,9 @@
 class Rock
 {
-    constructor(pos) {
+    constructor(pos, speed) {
         this.pos = pos;
-        this.size = new Vector(0.8, 0.8);
+        this.speed = speed;
+        this.size = new Vector(1, 1);
     }
 
     get type()
@@ -10,24 +11,31 @@ class Rock
         return "rock";
     }
 
-    static create(pos) 
+    static create(pos, color, speed) 
     {
-        return new Rock(pos);
+        if (speed ) {
+            console.log("s" + speed)
+            return new Rock(pos, speed);
+        } else {
+            return new Rock(pos, new Vector(0, 0));
+        }
     }
 
     collide = function(state, keys)
     {
-        if (keys.g) {
-            console.log("GRAB ROCK ZOG ZOG");
+        if (keys.KeyG) {
+            let rocks = state.rocks + 1;
+            console.log("GRAB ROCK ZOG ZOG " + rocks);
             let filtered = state.actors.filter(a => a != this);
-            return new State(state.level, filtered, state.status, state.score);
+            return new State(state.level, filtered, state.status, state.score, rocks);
         }
         return state;
     }
 
     update = function(time, state)
     {
-        return new Rock(this.pos);
+        let newPos = this.pos.plus(this.speed.times(time));
+        return new Rock(newPos, this.speed);
     }
     
 }

@@ -38,8 +38,8 @@ class Canvas {
             height: this.height / scale
         };
 
-        this.prevX = 0;
-        this.prevY = 0;
+        // this.prevX = 0;
+        // this.prevY = 0;
     }
 
     updateViewport = function(state)
@@ -74,47 +74,54 @@ class Canvas {
         for (let y = yStart; y < yEnd; y++) {
             for (let x = xStart; x < xEnd; x++) {
                 let tile = level.layout[y][x];
-                if (tile !== "empty") {
+                if (tile !== "empty" && tile !== "clip") {
                     let screenX = (x - left) * scale;
                     let screenY = (y - top) * scale;
 
-                    if(tile !== undefined)
+                    if(tile !== undefined) {
                         this.mapCtx.drawImage(sources[tile].image, screenX, screenY, scale, scale);
+                        // this.mapCtx.fillStyle = sources[tile].color;
+                        // this.mapCtx.fillRect(screenX, screenY, scale, scale);
+                    }
                 }
             }
         }
     }
 
-    drawBg = function(status)
+    drawBg = function(state)
     {
         let { left, top, width, height } = this.viewport;
-        if (status == "won") {
-            this.bgCtx.fillStyle = "rgb(68, 191, 255)";
-        } else if (status == "lost") {
-            this.bgCtx.fillStyle = "rgb(44, 136, 214)";
+        if (state.status == "won") {
+            this.bgCtx.fillStyle = "rgb(255, 255, 255)";
+        } else if (state.status == "lost") {
+            this.bgCtx.fillStyle = "rgb(255, 0, 0)";
         } else {
             this.bgCtx.fillStyle = "rgb(52, 166, 251)";
         }
         this.bgCtx.fillRect(0, 0, this.width, this.height);
         let _top = (height - top) * 32;
         let _left = left * 32;
-        this.bgCtx.drawImage(sources.mountain.image, 512, _top + 128, sources.mountain.width, sources.mountain.height);
-        this.bgCtx.drawImage(sources.mountain.image, 128, _top + 128, sources.mountain.width, sources.mountain.height);
-        this.bgCtx.drawImage(sources.mountains.image, left + 64, _top + 128, sources.mountains.width, sources.mountains.height);
-        this.bgCtx.drawImage(sources.mountains.image, left + 640, _top + 128, sources.mountains.width, sources.mountains.height);
-        this.bgCtx.drawImage(sources.cloud1.image, (_left / 50) + 128, _top + 128, sources.cloud1.width, sources.cloud1.height);
-        this.bgCtx.drawImage(sources.cloud2.image, (_left / 30) + 320, _top + 32, sources.cloud2.width, sources.cloud2.height);
-        this.bgCtx.drawImage(sources.cloud3.image, (_left / 10) + 640, _top + 96, sources.cloud3.width, sources.cloud3.height);
-        this.bgCtx.drawImage(sources.cloud1.image, (_left / 55) + 480, _top - 320, sources.cloud1.width, sources.cloud1.height);
-        this.bgCtx.drawImage(sources.cloud2.image, (_left / 35) + 768, _top - 128, sources.cloud2.width, sources.cloud2.height);
-        this.bgCtx.drawImage(sources.cloud3.image, (_left / 15) + 32, _top - 256, sources.cloud3.width, sources.cloud3.height);
+        // this.bgCtx.fillStyle = "pink";
+
+        // this.bgCtx.fillRect(500, 200, 200, 200);
+        // this.bgCtx.drawImage(sources.mountain.image, 512, _top + 128, sources.mountain.width, sources.mountain.height);
+        // this.bgCtx.drawImage(sources.mountain.image, 128, _top + 128, sources.mountain.width, sources.mountain.height);
+        // this.bgCtx.drawImage(sources.mountains.image, left + 64, _top + 128, sources.mountains.width, sources.mountains.height);
+        // this.bgCtx.drawImage(sources.mountains.image, left + 640, _top + 128, sources.mountains.width, sources.mountains.height);
+        // this.bgCtx.drawImage(sources.cloud1.image, (_left / 50) + 128, _top + 128, sources.cloud1.width, sources.cloud1.height);
+        // this.bgCtx.drawImage(sources.cloud2.image, (_left / 30) + 320, _top + 32, sources.cloud2.width, sources.cloud2.height);
+        // this.bgCtx.drawImage(sources.cloud3.image, (_left / 10) + 640, _top + 96, sources.cloud3.width, sources.cloud3.height);
+        // this.bgCtx.drawImage(sources.cloud1.image, (_left / 55) + 480, _top - 320, sources.cloud1.width, sources.cloud1.height);
+        // this.bgCtx.drawImage(sources.cloud2.image, (_left / 35) + 768, _top - 128, sources.cloud2.width, sources.cloud2.height);
+        // this.bgCtx.drawImage(sources.cloud3.image, (_left / 15) + 32, _top - 256, sources.cloud3.width, sources.cloud3.height);
     }
 
     syncState = function(state)
     {
         this.updateViewport(state);
         this.clearDisplay(this.mapCtx);
-        this.drawBg(state.status);
+        this.clearDisplay(this.actorsCtx);
+        this.drawBg(state);
         this.drawMap(state.level);
         this.drawActors(state.actors);
         this.drawUi(state);
@@ -122,17 +129,25 @@ class Canvas {
 
     drawUi = function(state)
     {
-        this.uiCtx.clearRect(0, 0, 80, 80);
-        this.uiCtx.fillStyle = "black";
-        this.uiCtx.font = '20px sans-serif';
-        this.uiCtx.fillText(state.score, 20, 20);
+        if (state.status == "won" || state.status == "lost") {
+            this.uiCtx.fillStyle = "black";
+            this.uiCtx.font = '40px sans-serif';
+            this.uiCtx.textAlign = "center";
+            this.uiCtx.fillText(state.status, width / 2, height / 2 - 40);
+        } else {
+            this.uiCtx.clearRect(0, 0, 80, 80);
+            this.uiCtx.fillStyle = "black";
+            this.uiCtx.font = '20px sans-serif';
+            this.uiCtx.fillText(state.score, 20, 20);        
+        }
     }
 
     clear()
     {
-        this.bgLayer.remove();
+        //this.bgLayer.remove();
         this.mapLayer.remove();
         this.actorsLayer.remove();
+        //this.uiLayer.remove();
     }
 
     clearDisplay = function(ctx) {
@@ -148,8 +163,23 @@ class Canvas {
             let y = (actor.pos.y - this.viewport.top) * scale;
             if (actor.type == "player") {
                 this.drawPlayer(actor, x, y, width, height);
+            } else if (actor.type == "enemy") {
+                // this.flipPlayer = actor.speed.x > 0;
+                let tile = Math.floor(Date.now() / 60) % 4;
+                // this.actorsCtx.save();
+                // if (this.flipPlayer) {
+                //     this.flipHorizontally(this.actorsCtx, x + width / 2);
+                // }
+                let tileX = tile * sources.enemy.width;
+                // this.actorsCtx.clearRect(actor.prevX , actor.prevY , width, height);
+                this.actorsCtx.drawImage(sources.enemy.image, tileX, 0, sources.enemy.width, sources.enemy.height, x, y, width, height);
+                actor.prevX = x;
+                actor.prevY = y;
+                // this.actorsCtx.restore();
             } else {
-                this.mapCtx.drawImage(sources[actor.type].image, x, y, width, height);          
+                this.actorsCtx.drawImage(sources[actor.type].image, x, y, width, height);
+                // this.mapCtx.fillStyle = sources[actor.type].color;
+                // this.mapCtx.fillRect(x, y, width, height);
             }
         }
     }
@@ -175,7 +205,7 @@ class Canvas {
             tile = Math.floor(Date.now() / 60) % 9;
         }
 
-        this.actorsCtx.clearRect(this.prevX , this.prevY , width, height);
+        // this.actorsCtx.clearRect(player.prevX , player.prevY , width, height);
         this.actorsCtx.save();
         if (this.flipPlayer) {
             this.flipHorizontally(this.actorsCtx, x + width / 2);
@@ -185,8 +215,8 @@ class Canvas {
         
         this.actorsCtx.drawImage(sources.player.image, tileX, tileY, sources.player.width, sources.player.height, x, y, width, height);
         this.actorsCtx.restore();
-        this.prevY = y;
-        this.prevX = x;
+        player.prevX = x;
+        player.prevY = y; 
     }
 
     flipHorizontally = function(ctx, around) {

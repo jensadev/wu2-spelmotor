@@ -1,10 +1,11 @@
 class Lava
 {
-    constructor(pos, speed)
+    constructor(pos, speed, reset)
     {
         this.pos = pos;
         this.speed = speed;
         this.size = new Vector(1, 1);
+        this.reset = reset;
     }
 
     get type()
@@ -12,9 +13,13 @@ class Lava
         return "lava";
     }
 
-    static create(pos) 
+    static create(pos, color) 
     {
-        return new Lava(pos, new Vector(0, 0));
+        if (color == "255,255,155") {
+            return new Lava(pos, new Vector(0, 3), pos);
+        } else {
+            return new Lava(pos, new Vector(0, 0));
+        }
     }
 
     collide = function(state)
@@ -24,14 +29,14 @@ class Lava
 
     update = function(time, state)
     {
-        // let newPos = this.pos.plus(this.speed.times(time));
-        // if (!state.level.touches(newPos, this.size, "wall")) {
-        //     return new Lava(newPos, this.speed, this.reset);
-        // } else if (this.reset) {
-        //     return new Lava(this.reset, this.speed, this.reset);
-        // } else {
-            return new Lava(this.pos, this.speed.times(1));
-        // }
+        let newPos = this.pos.plus(this.speed.times(time));
+        if (!state.level.touches(newPos, this.size, groundTypes)) {
+             return new Lava(newPos, this.speed, this.reset);
+        } else if (this.reset) {
+            return new Lava(this.reset, this.speed, this.reset);
+        } else {
+            return new Lava(this.pos, this.speed.times(-1));
+        }
     }
     
 }

@@ -26,7 +26,7 @@ class Item
         let status = state.status;
         let score = state.score;
         if (!filtered.some(a => a.type == "item")) status = "won";
-        return new State(state.level, filtered, status, ++score);
+        return new State(state.level, filtered, status, ++score, state.rocks);
     }
 
     update = function(time, state)

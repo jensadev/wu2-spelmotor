@@ -1,28 +1,26 @@
 const levelKey = {
     "0,0,0": "empty",
+    "255,0,255": "clip",
     "0,0,255": "platformC",
     "100,0,255": "platformL",
     "0,100,255": "platformR",
-    "100,100,100": Rock,
     "255,255,0": "grass",
-    "255,255,100": "ground", 
-    "255,0,255": "ground",
+    "0,155,100": "mountain",
+    "255,255,255": "cloud",
+    "155,55,0": "ground",
+    "100,100,100": Rock,
+    "255,255,100": Lava,
+    "255,255,155": Lava, 
     "0,255,0": Player,
-    "255,0,100": Item
+    "255,0,100": Item,
+    "255,100,255": Enemy
 };
 
 const groundTypes = ["grass", "ground", "platformC", "platformR", "platformL"];
 
 let sources = {
-    // map1: 'img/maps/map1.png',
-    // map4: 'img/maps/map4.png',
-    // grass: 'img/grass.png',
-    // lava: 'img/lava.png',
-    // ground: 'img/ground.png',
-    // player: 'img/sprites/player.png',
-    // item: 'img/item.png',
     player: {
-        src: 'img/sprites/cavedude_side.png',
+        src: 'img/sprites/cavedude_side2.png',
         srcWidth: 1248,
         srcHeight: 186,
         width: 96,
@@ -30,8 +28,17 @@ let sources = {
         offsetX: 0,
         offsetY: 512
     },
+    enemy: {
+        src: 'img/sprites/player.png',
+        srcWidth: 128,
+        srcHeight: 32,
+        width: 32,
+        height: 32,
+        offsetX: 0,
+        offsetY: 0
+    },
     item: {
-        src: 'img/sprites/cavedude_side.png',
+        src: 'img/sprites/cavedude_side2.png',
         srcWidth: 32,
         srcHeight: 32,
         width: 96,
@@ -40,7 +47,7 @@ let sources = {
         offsetY: 480
     },
     grass: {
-        src: 'img/sprites/cavedude_side.png',
+        src: 'img/sprites/cavedude_side2.png',
         srcWidth: 32,
         srcHeight: 32,
         width: 32,
@@ -48,8 +55,17 @@ let sources = {
         offsetX: 64,
         offsetY: 0
     },
+    lava: {
+        src: 'img/sprites/cavedude_side2.png',
+        srcWidth: 32,
+        srcHeight: 32,
+        width: 32,
+        height: 32,
+        offsetX: 96,
+        offsetY: 0
+    },
     ground: {
-        src: 'img/sprites/cavedude_side.png',
+        src: 'img/sprites/cavedude_side2.png',
         srcWidth: 32,
         srcHeight: 32,
         width: 32,
@@ -58,7 +74,7 @@ let sources = {
         offsetY: 0
     },
     platformC: {
-        src: 'img/sprites/cavedude_side.png',
+        src: 'img/sprites/cavedude_side2.png',
         srcWidth: 32,
         srcHeight: 32,
         width: 32,
@@ -67,7 +83,7 @@ let sources = {
         offsetY: 480
     },
     platformL: {
-        src: 'img/sprites/cavedude_side.png',
+        src: 'img/sprites/cavedude_side2.png',
         srcWidth: 32,
         srcHeight: 32,
         width: 32,
@@ -76,7 +92,7 @@ let sources = {
         offsetY: 480
     },
     platformR: {
-        src: 'img/sprites/cavedude_side.png',
+        src: 'img/sprites/cavedude_side2.png',
         srcWidth: 32,
         srcHeight: 32,
         width: 32,
@@ -85,7 +101,7 @@ let sources = {
         offsetY: 480
     },
     rock: {
-        src: 'img/sprites/cavedude_side.png',
+        src: 'img/sprites/cavedude_side2.png',
         srcWidth: 32,
         srcHeight: 32,
         width: 32,
@@ -93,9 +109,8 @@ let sources = {
         offsetX: 320,
         offsetY: 480
     },
-    map: {src: 'img/maps/tower.png'},
     mountains: {
-        src: 'img/sprites/cavedude_side.png',
+        src: 'img/sprites/cavedude_side2.png',
         srcWidth: 352,
         srcHeight: 288,
         width: 352,
@@ -105,7 +120,7 @@ let sources = {
         repeat: "repeat-x"
     },
     mountain: {
-        src: 'img/sprites/cavedude_side.png',
+        src: 'img/sprites/cavedude_side2.png',
         srcWidth: 160,
         srcHeight: 320,
         width: 160,
@@ -113,8 +128,8 @@ let sources = {
         offsetX: 384,
         offsetY: 0
     },
-    cloud1: {
-        src: 'img/sprites/cavedude_side.png',
+    cloud: {
+        src: 'img/sprites/cavedude_side2.png',
         srcWidth: 224,
         srcHeight: 96,
         width: 224,
@@ -123,7 +138,7 @@ let sources = {
         offsetY: 320
     },
     cloud2: {
-        src: 'img/sprites/cavedude_side.png',
+        src: 'img/sprites/cavedude_side2.png',
         srcWidth: 128,
         srcHeight: 64,
         width: 128,
@@ -132,12 +147,13 @@ let sources = {
         offsetY: 320
     },
     cloud3: {
-        src: 'img/sprites/cavedude_side.png',
+        src: 'img/sprites/cavedude_side2.png',
         srcWidth: 384,
         srcHeight: 128,
         width: 384,
         height: 128,
         offsetX: 352,
         offsetY: 320
-    }
+    },
+    map1: {src: 'img/maps/tower.png'}
 };

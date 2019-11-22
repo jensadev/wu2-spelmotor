@@ -1,6 +1,6 @@
 class Player
 {
-    constructor(pos, speed)
+    constructor(pos, speed, prevX, prevY)
     {
         this.pos = pos;
         this.size = new Vector(2, 2);
@@ -8,6 +8,8 @@ class Player
         this.xOverlap = 4;
         this.xSpeed = 8;
         this.ySpeed = 16;
+        this.prevX = prevX;
+        this.prevY = prevY;
     }
 
     static create(pos) {
@@ -22,8 +24,8 @@ class Player
     update = function(time, state, keys)
     {
         let currentXSpeed = 0;
-        if (keys.ArrowLeft || keys.a) currentXSpeed -= this.xSpeed;
-        if (keys.ArrowRight || keys.d) currentXSpeed += this.xSpeed;
+        if (keys.ArrowLeft || keys.KeyA) currentXSpeed -= this.xSpeed;
+        if (keys.ArrowRight || keys.KeyD) currentXSpeed += this.xSpeed;
         let pos = this.pos;
         let movedX = pos.plus(new Vector(currentXSpeed * time, 0));
 
@@ -31,16 +33,12 @@ class Player
             pos = movedX;
         }
 
-        //console.log(state.level.touches(pos, this.size, "rock"));
-
         let currentYSpeed = this.speed.y + time * gravity;
         let movedY = pos.plus(new Vector(0, currentYSpeed * time));
 
-        if (currentYSpeed)
-
         if (!state.level.touches(movedY, this.size, groundTypes)) {
             pos = movedY;
-        } else if ( (keys.ArrowUp || keys.w) && currentYSpeed > 0) {
+        } else if ( (keys.ArrowUp || keys.KeyW) && currentYSpeed > 0) {
             if (currentYSpeed > 25) {
                 console.log("ouch cant dodge by uparrow"); // call on function for taking damage                
             }
@@ -52,6 +50,6 @@ class Player
             currentYSpeed = 0;
         }
 
-        return new Player(pos, new Vector(currentXSpeed, currentYSpeed));
+        return new Player(pos, new Vector(currentXSpeed, currentYSpeed), this.prevX, this.prevY);
     }
 }
