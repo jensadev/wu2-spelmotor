@@ -199,7 +199,7 @@ class Canvas {
         let tile = 1;
         let jump = 0;
         if (player.speed.y != 0) {
-            tile = Math.floor(Date.now() / 60) % 13;
+            tile = Math.floor(Date.now() / 180) % 13;
             jump = 1;
         } else if (player.speed.x != 0) {
             tile = Math.floor(Date.now() / 60) % 9;
