@@ -29,10 +29,10 @@ let sources = {
         offsetY: 512
     },
     enemy: {
-        src: 'img/sprites/player.png',
-        srcWidth: 128,
+        src: 'img/sprites/dino.png',
+        srcWidth: 192,
         srcHeight: 32,
-        width: 32,
+        width: 48,
         height: 32,
         offsetX: 0,
         offsetY: 0
