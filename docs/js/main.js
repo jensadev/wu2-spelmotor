@@ -39,7 +39,7 @@ loadImages(sources, function() {
             let a = new Image();
             a.src = offCanvas.toDataURL('png');
             sources[src].image = a;
-            sources[src].color = getRandomColor();
+            sources[src].color = getRandomColor(); // sätt en slumpad färg för testning
         }
     }
     runGame(sources.map1.image);
@@ -58,9 +58,9 @@ async function runGame(plans) {
     } else if (status == "lost") {
         console.log("Slain by lava");
     }
-    window.addEventListener("click", function temp() {
+    window.addEventListener("keydown", function temp() {
         runGame(sources.map1.image)
-        window.removeEventListener("click", temp, false);
+        window.removeEventListener("keydown", temp, false);
     }, false);
 }
 

@@ -79,9 +79,10 @@ class Canvas {
                     let screenY = (y - top) * scale;
 
                     if(tile !== undefined) {
-                        this.mapCtx.drawImage(sources[tile].image, screenX, screenY, scale, scale);
-                        // this.mapCtx.fillStyle = sources[tile].color;
-                        // this.mapCtx.fillRect(screenX, screenY, scale, scale);
+                        // Byt mellan dessa för att rita bild eller färg
+                        // this.mapCtx.drawImage(sources[tile].image, screenX, screenY, scale, scale);
+                        this.mapCtx.fillStyle = sources[tile].color;
+                        this.mapCtx.fillRect(screenX, screenY, scale, scale);
                     }
                 }
             }
@@ -96,7 +97,12 @@ class Canvas {
         } else if (state.status == "lost") {
             this.bgCtx.fillStyle = "rgb(255, 0, 0)";
         } else {
-            this.bgCtx.fillStyle = "rgb(52, 166, 251)";
+            var gradient = this.bgCtx.createLinearGradient(left, top, this.width, this.height);
+            gradient.addColorStop(0, "rgb(52, 166, 251)");
+            gradient.addColorStop(.5, "rgb(255, 255, 255)");
+            gradient.addColorStop(1, "rgb(52, 166, 251)");
+            this.bgCtx.fillStyle = gradient;
+            //this.bgCtx.fillStyle = "rgb(152, 266, 251)";
         }
         this.bgCtx.fillRect(0, 0, this.width, this.height);
         let _top = (height - top) * 32;
@@ -161,6 +167,8 @@ class Canvas {
             let height = actor.size.y * scale;
             let x = (actor.pos.x - this.viewport.left) * scale;
             let y = (actor.pos.y - this.viewport.top) * scale;
+            let tileY = 0;
+            let tileX = 1; 
             if (actor.type == "player") {
                 this.drawPlayer(actor, x, y, width, height);
             } else if (actor.type == "enemy") {
@@ -170,8 +178,7 @@ class Canvas {
                 // if (this.flipPlayer) {
                 //     this.flipHorizontally(this.actorsCtx, x + width / 2);
                 // }
-                let tileX = tile * sources.enemy.width;
-                let tileY = 0;
+                tileX = tile * sources.enemy.width;
                 if (actor.delta < 0) {
                     tileY = 1;
                 }
@@ -182,9 +189,17 @@ class Canvas {
                 actor.prevY = y;
                 // this.actorsCtx.restore();
             } else {
-                this.actorsCtx.drawImage(sources[actor.type].image, x, y, width, height);
-                // this.mapCtx.fillStyle = sources[actor.type].color;
-                // this.mapCtx.fillRect(x, y, width, height);
+                if (actor.type == "lava")
+                    tileX = Math.floor(Date.now() / 60) % 2 * scale;
+
+                // Byt mellan dessa för att rita en färg eller bild    
+                // this.actorsCtx.drawImage(sources[actor.type].image, 
+                                            // tileX, tileY,
+                                            // width, height,
+                                            // x, y, 
+                                            // width, height);
+                this.mapCtx.fillStyle = sources[actor.type].color;
+                this.mapCtx.fillRect(x, y, width, height);
             }
         }
     }

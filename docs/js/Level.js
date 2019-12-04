@@ -49,7 +49,7 @@ class Level
                     let here = isOutside ? "grass" : this.layout[y][x];
                     if (here == types[i]) return true;
                 }
-            }    
+            }
         }
         return false;
     }

@@ -31,6 +31,8 @@ class Enemy
         let currentXSpeed = this.xSpeed * this.delta;
         let pos = this.pos;
         let movedX = pos.plus(new Vector(currentXSpeed * time, 0));
+        let currentYSpeed = this.speed.y + time * gravity;
+        let movedY = pos.plus(new Vector(0, currentYSpeed * time));
 
         if (!state.level.touches(movedX, this.size, ["clip", "grass", "ground", "platformC", "platformR", "platformL"])) {
             pos = movedX;
@@ -38,15 +40,12 @@ class Enemy
             this.delta *= -1;
         }
 
-        let currentYSpeed = this.speed.y + time * gravity;
-        let movedY = pos.plus(new Vector(0, currentYSpeed * time));
-
         if (!state.level.touches(movedY, this.size, ["clip", "grass", "ground", "platformC", "platformR", "platformL"])) {
             pos = movedY;
         } else {
             currentYSpeed = 0;
         }
-
+        
         return new Enemy(pos, new Vector(currentXSpeed, currentYSpeed), this.delta, this.prevX, this.prevY);
     }
 }
