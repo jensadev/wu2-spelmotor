@@ -156,7 +156,8 @@ let sources = {
         offsetY: 320
     },
     map1: {src: 'img/maps/tower.png'},
-    map2: {src: 'img/maps/tower2.png'}
+    map2: {src: 'img/maps/tower1.png'},
+    map3: {src: 'img/maps/tower2.png'}
 };
 
-let maps = [sources.map1, sources.map2];
+let maps = [sources.map1, sources.map2, sources.map3];
