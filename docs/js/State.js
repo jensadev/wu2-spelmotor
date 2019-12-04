@@ -19,11 +19,11 @@ class State
         return this.actors.find(a => a.type == "player");
     }
 
-    get lava()
+    get enemies()
     {
         let temp = [];
         for (let actor of this.actors) {
-            if (actor.type == "lava") {
+            if (actor.type == "enemy") {
                 temp.push(actor);
             }
         }
@@ -46,7 +46,7 @@ class State
         if (newState.status != "playing") return newState;
       
         let player = newState.player;
-        let lava = newState.lava;
+        let enemies = newState.enemies;
 
         if (keys.Space && this.rocks > 0) {
             newState.rocks--;
@@ -65,16 +65,13 @@ class State
         for (let actor of actors) {
             if (actor != player && this.overlap(actor, player)) {
                     newState = actor.collide(newState, keys);
-            // } else if (actor.type == "enemy") {
-            // //    console.log(actor)
-            //     for (let i = 0; i < lava.length; i++) {
-            //         //console.log(enemies[i])
-            //         if(this.overlap(actor, lava[i])) {
-            // //             newState.actors.filter(a => a != enemies[i]);
-            //             console.log(actor)
-            //         }
-            //     }
-            //    console.log(newState.actors.length)
+            } else if (actor.type == "rock") {
+                // här luktar det tveksam kod
+                for (let i = 0; i < enemies.length; i++) {
+                    if(this.overlap(actor, enemies[i])) {
+                        newState.actors = newState.actors.filter(a => a != enemies[i]);
+                    }
+                }
             }
         }
 
