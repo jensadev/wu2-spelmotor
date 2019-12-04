@@ -1,6 +1,6 @@
 class Player
 {
-    constructor(pos, speed, prevX, prevY)
+    constructor(pos, speed, prevX, prevY, facing)
     {
         this.pos = pos;
         this.size = new Vector(2, 2);
@@ -10,6 +10,7 @@ class Player
         this.ySpeed = 16;
         this.prevX = prevX;
         this.prevY = prevY;
+        this.facing = facing || "left";
     }
 
     static create(pos) {
@@ -50,6 +51,6 @@ class Player
             currentYSpeed = 0;
         }
 
-        return new Player(pos, new Vector(currentXSpeed, currentYSpeed), this.prevX, this.prevY);
+        return new Player(pos, new Vector(currentXSpeed, currentYSpeed), this.prevX, this.prevY, this.facing);
     }
 }

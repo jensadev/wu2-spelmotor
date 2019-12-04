@@ -14,7 +14,6 @@ class Rock
     static create(pos, color, speed) 
     {
         if (speed ) {
-            console.log("s" + speed)
             return new Rock(pos, speed);
         } else {
             return new Rock(pos, new Vector(0, 0));

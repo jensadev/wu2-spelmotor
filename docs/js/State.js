@@ -50,7 +50,12 @@ class State
 
         if (keys.Space && this.rocks > 0) {
             newState.rocks--;
-            actors.push(Rock.create(player.pos, false, new Vector(10, 0)));
+            console.log(player.facing)
+            if (player.facing == "right") {
+                actors.push(Rock.create(player.pos, false, new Vector(10, 0)));
+            } else {
+                actors.push(Rock.create(player.pos, false, new Vector(-10, 0)));
+            }
         }
 
         if (this.level.touches(player.pos, player.size, ["lava"])) {

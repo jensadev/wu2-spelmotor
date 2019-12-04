@@ -1,5 +1,5 @@
 class Canvas {
-    constructor(width, height, parent, level)
+    constructor(width, height, parent, level, colorMode)
     {
         this.width = Math.min(width, level.width * scale);
         this.height = Math.min(height, level.height * scale);
@@ -30,6 +30,7 @@ class Canvas {
         parent.appendChild(this.uiLayer);
 
         this.flipPlayer = false;
+        this.colorMode = colorMode || false;
 
         this.viewport = {
             left: 0,
@@ -79,10 +80,12 @@ class Canvas {
                     let screenY = (y - top) * scale;
 
                     if(tile !== undefined) {
-                        // Byt mellan dessa för att rita bild eller färg
-                        // this.mapCtx.drawImage(sources[tile].image, screenX, screenY, scale, scale);
-                        this.mapCtx.fillStyle = sources[tile].color;
-                        this.mapCtx.fillRect(screenX, screenY, scale, scale);
+                        if(this.colorMode) {
+                            this.mapCtx.fillStyle = sources[tile].color;
+                            this.mapCtx.fillRect(screenX, screenY, scale, scale);    
+                        } else {
+                            this.mapCtx.drawImage(sources[tile].image, screenX, screenY, scale, scale);
+                        }
                     }
                 }
             }
@@ -172,34 +175,31 @@ class Canvas {
             if (actor.type == "player") {
                 this.drawPlayer(actor, x, y, width, height);
             } else if (actor.type == "enemy") {
-                // this.flipPlayer = actor.speed.x > 0;
                 let tile = Math.floor(Date.now() / 60) % 4;
-                // this.actorsCtx.save();
-                // if (this.flipPlayer) {
-                //     this.flipHorizontally(this.actorsCtx, x + width / 2);
-                // }
+
                 tileX = tile * sources.enemy.width;
                 if (actor.delta < 0) {
                     tileY = 1;
                 }
                 tileY = tileY * sources.enemy.height;
-                // this.actorsCtx.clearRect(actor.prevX , actor.prevY , width, height);
                 this.actorsCtx.drawImage(sources.enemy.image, tileX, tileY, sources.enemy.width, sources.enemy.height, x, y, width, height);
                 actor.prevX = x;
                 actor.prevY = y;
-                // this.actorsCtx.restore();
             } else {
-                if (actor.type == "lava")
+                if (actor.type == "lava") {
                     tileX = Math.floor(Date.now() / 60) % 2 * scale;
+                }
 
-                // Byt mellan dessa för att rita en färg eller bild    
-                // this.actorsCtx.drawImage(sources[actor.type].image, 
-                                            // tileX, tileY,
-                                            // width, height,
-                                            // x, y, 
-                                            // width, height);
-                this.mapCtx.fillStyle = sources[actor.type].color;
-                this.mapCtx.fillRect(x, y, width, height);
+                if (this.colorMode) {
+                    this.mapCtx.fillStyle = sources[actor.type].color;
+                    this.mapCtx.fillRect(x, y, width, height);    
+                } else {
+                    this.actorsCtx.drawImage(sources[actor.type].image, 
+                                            tileX, tileY,
+                                            width, height,
+                                            x, y, 
+                                            width, height);
+                }
             }
         }
     }
@@ -212,12 +212,13 @@ class Canvas {
         // x -= playerOverlap;
         // y -= playerOverlap;
 
+        let tile = 1;
+        let jump = 0;
+
         if (player.speed.x != 0) {
             this.flipPlayer = player.speed.x > 0;
         }
 
-        let tile = 1;
-        let jump = 0;
         if (player.speed.y != 0) {
             tile = Math.floor(Date.now() / 180) % 13;
             jump = 1;
@@ -229,7 +230,11 @@ class Canvas {
         this.actorsCtx.save();
         if (this.flipPlayer) {
             this.flipHorizontally(this.actorsCtx, x + width / 2);
+            player.facing = "right";
+        } else {
+            player.facing = "left";
         }
+
         let tileX = tile * sources.player.width;
         let tileY = jump * sources.player.height;
         

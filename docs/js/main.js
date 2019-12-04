@@ -1,6 +1,7 @@
 let width = 1024;
 let height = 768;
 let scale = 32;
+let level = 0;
 
 let images = [];
 
@@ -42,7 +43,7 @@ loadImages(sources, function() {
             sources[src].color = getRandomColor(); // sätt en slumpad färg för testning
         }
     }
-    runGame(sources.map1.image);
+    runGame(maps[level].image);
 });
 
 async function runGame(plans) {
@@ -55,11 +56,12 @@ async function runGame(plans) {
     let status = await runLevel(new Level(plans, offCtx, levelKey));
     if (status == "won") {
         console.log("You won");
+        level++;
     } else if (status == "lost") {
         console.log("Slain by lava");
     }
     window.addEventListener("keydown", function temp() {
-        runGame(sources.map1.image)
+        runGame(maps[level].image);
         window.removeEventListener("keydown", temp, false);
     }, false);
 }
@@ -68,7 +70,7 @@ function runLevel(level) {
     console.log(level)
     let stage = document.getElementById('stage');
     stage.setAttribute("style", "width:" + width + "px;");
-    let display = new Canvas(width, height, stage, level);
+    let display = new Canvas(width, height, stage, level, false);
     let state = State.start(level);
     console.log(state)
     return new Promise(resolve => {
