@@ -132,7 +132,7 @@ class Canvas {
         this.clearDisplay(this.actorsCtx);
         this.drawBg(state);
         this.drawMap(state.level);
-        this.drawActors(state.actors);
+        this.drawActors(state.actors, state.rocks);
         this.drawUi(state);
     }
 
@@ -163,7 +163,7 @@ class Canvas {
         ctx.clearRect(0, 0, this.width, this.height);
     }
 
-    drawActors = function(actors)
+    drawActors = function(actors, rocks)
     {
         for (let actor of actors) {
             let width = actor.size.x * scale;
@@ -173,7 +173,7 @@ class Canvas {
             let tileY = 0;
             let tileX = 1; 
             if (actor.type == "player") {
-                this.drawPlayer(actor, x, y, width, height);
+                this.drawPlayer(actor, x, y, width, height, rocks);
             } else if (actor.type == "enemy") {
                 let tile = Math.floor(Date.now() / 60) % 4;
 
@@ -204,7 +204,7 @@ class Canvas {
         }
     }
 
-    drawPlayer = function(player, x, y, width, height)
+    drawPlayer = function(player, x, y, width, height, rocks)
     {
         // let playerOverlap = 4;
         // width += playerOverlap * 1;
@@ -242,6 +242,19 @@ class Canvas {
         this.actorsCtx.restore();
         player.prevX = x;
         player.prevY = y; 
+
+        if (rocks > 0) {
+            let fx;
+            if (player.facing == "right") {
+                fx = x + 20;
+            } else {
+                fx = x + 30;
+            }
+            this.actorsCtx.drawImage(sources.rock.image, 
+                fx, y + 40,
+                16, 16);
+        }
+
     }
 
     flipHorizontally = function(ctx, around) {
