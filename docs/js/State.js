@@ -59,9 +59,9 @@ class State
         }
 
         if (this.level.touches(player.pos, player.size, ["lava"])) {
-            return new State(this.level, actors, "lost", this.score, this.rocks);
+            return new State(this.level, actors, "lost", this.score, 0);
         }
-      
+
         for (let actor of actors) {
             if (actor != player && this.overlap(actor, player)) {
                     newState = actor.collide(newState, keys);

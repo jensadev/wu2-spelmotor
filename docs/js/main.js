@@ -2,6 +2,7 @@ let width = 1024;
 let height = 768;
 let scale = 32;
 let level = 0;
+let lives = 3;
 
 let images = [];
 
@@ -58,10 +59,18 @@ async function runGame(plans) {
         console.log("You won");
         level++;
     } else if (status == "lost") {
-        console.log("Slain by lava");
+        lives--;
+        console.log("Slain");
     }
     window.addEventListener("keydown", function temp() {
-        runGame(maps[level].image);
+        if (lives == 0) {
+            console.log("restart");
+            level = 0;
+            lives = 3;
+            runGame(maps[level].image);
+        } else {
+            runGame(maps[level].image);
+        }
         window.removeEventListener("keydown", temp, false);
     }, false);
 }
