@@ -8,7 +8,7 @@ class State
         this.rocks = rocks;
         this.maxScore = actors.filter(x => x === Item).length;
         this.health = health || 100;
-        this.itemCount = this.items;
+        this.itemCount = this.items; // dumb needs fix
     }
   
     static start(level)

@@ -83,7 +83,7 @@ function runLevel(level) {
     console.log(level);
     let stage = document.getElementById('stage');
     stage.setAttribute("style", "width:" + width + "px;");
-    let display = new Canvas(width, height, stage, level, false);
+    let display = new Canvas(width, height, stage, level, false); // sätt true för färglänge, så du kan testa utan texturer
     let state = State.start(level);
     console.log(state);
     return new Promise(resolve => {
