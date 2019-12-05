@@ -46,7 +46,6 @@ class State
         if (newState.status != "playing") return newState;
       
         let player = newState.player;
-        let enemies = newState.enemies;
 
         if (keys.Space && this.rocks > 0) {
             newState.rocks--;
@@ -65,8 +64,10 @@ class State
         for (let actor of actors) {
             if (actor != player && this.overlap(actor, player)) {
                     newState = actor.collide(newState, keys);
-            } else if (actor.type == "rock") {
+            }
+            else if (actor.type == "rock") {
                 // här luktar det tveksam kod
+                let enemies = newState.enemies;
                 for (let i = 0; i < enemies.length; i++) {
                     if(this.overlap(actor, enemies[i])) {
                         newState.actors = newState.actors.filter(a => a != enemies[i]);
@@ -74,7 +75,6 @@ class State
                 }
             }
         }
-
         return newState;
     }
 }
