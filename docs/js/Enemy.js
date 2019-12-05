@@ -4,7 +4,7 @@ class Enemy
     {
         this.pos = pos;
         this.speed = speed;
-        this.size = new Vector(3, 1.5);
+        this.size = new Vector(2, 2);
         this.delta = delta;
         this.xSpeed = 3;
         this.prevX = prevX;

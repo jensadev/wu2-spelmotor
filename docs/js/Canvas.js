@@ -172,11 +172,12 @@ class Canvas {
             if (actor.type == "player") {
                 this.drawPlayer(actor, x, y, width, height, rocks);
             } else if (actor.type == "enemy") {
-                let tile = Math.floor(Date.now() / 60) % 4;
+                y = y + 4;
+                let tile = Math.floor(Date.now() / 60) % 9;
 
                 tileX = tile * sources.enemy.width;
 
-                if (actor.delta < 0) {
+                if (actor.delta > 0) {
                     tileY = 1;
                 }
 
@@ -205,6 +206,7 @@ class Canvas {
 
     drawPlayer = function(player, x, y, width, height, rocks)
     {
+        y = y + 4;
         let tile = 1;
         let jump = 0;
 
