@@ -41,8 +41,8 @@ let sources = {
         src: 'img/sprites/cavedude_side.png',
         srcWidth: 32,
         srcHeight: 32,
-        width: 96,
-        height: 96,
+        width: 32,
+        height: 32,
         offsetX: 192,
         offsetY: 480
     },

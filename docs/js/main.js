@@ -2,7 +2,7 @@ let width = 1024;
 let height = 768;
 let scale = 32;
 let level = 0;
-let lives = 3;
+let lives = 3; // horrible global
 
 let images = [];
 
@@ -47,14 +47,15 @@ loadImages(sources, function() {
     runGame(maps[level].image);
 });
 
-async function runGame(plans) {
-    
+async function runGame(plans)
+{
     // let offMapCtx = new OffscreenCanvas(sources.map.image.width, sources.map.image.height).getContext('2d');
     // let status = await runLevel(new Level(plans, offMapCtx, levelKey));
     offCanvas.width = plans.width;
     offCanvas.height = plans.height;
     offCtx.clearRect(0, 0, plans.width, plans.height);
     let status = await runLevel(new Level(plans, offCtx, levelKey));
+
     if (status == "won") {
         console.log("You won");
         level++;
@@ -62,26 +63,29 @@ async function runGame(plans) {
         lives--;
         console.log("Slain");
     }
-    window.addEventListener("keydown", function temp() {
-        if (lives == 0) {
-            console.log("restart");
-            level = 0;
-            lives = 3;
-            runGame(maps[level].image);
-        } else {
-            runGame(maps[level].image);
+
+    window.addEventListener("keydown", function temp(e) {
+        if (e.code == "Space") {
+            if (lives == 0) {
+                console.log("restart");
+                level = 0;
+                lives = 3;
+                runGame(maps[level].image);
+            } else {
+                runGame(maps[level].image);
+            }
+            window.removeEventListener("keydown", temp, false);
         }
-        window.removeEventListener("keydown", temp, false);
     }, false);
 }
 
 function runLevel(level) {
-    console.log(level)
+    console.log(level);
     let stage = document.getElementById('stage');
     stage.setAttribute("style", "width:" + width + "px;");
     let display = new Canvas(width, height, stage, level, false);
     let state = State.start(level);
-    console.log(state)
+    console.log(state);
     return new Promise(resolve => {
         runAnimation(time => {
             state = state.update(time, arrowKeys);

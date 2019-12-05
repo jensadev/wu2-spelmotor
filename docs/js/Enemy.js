@@ -11,7 +11,8 @@ class Enemy
         this.prevY = prevY;
     }
 
-    static create(pos) {
+    static create(pos)
+    {
         return new Enemy(pos.plus(new Vector(0, -1)), new Vector(2, 0), 1);
     }
 
@@ -22,9 +23,13 @@ class Enemy
 
     collide = function(state)
     {
-        return new State(state.level, state.actors, "lost");
+        let currentHealth = state.health - 3;
+        console.log(currentHealth);
+        if (currentHealth <= 0) {
+            return new State(state.level, state.actors, "lost");
+        }
+        return new State(state.level, state.actors, state.status, state.score, state.rocks, currentHealth);
     }
-
 
     update = function(time, state)
     {
@@ -45,7 +50,7 @@ class Enemy
         } else {
             currentYSpeed = 0;
         }
-        
+
         return new Enemy(pos, new Vector(currentXSpeed, currentYSpeed), this.delta, this.prevX, this.prevY);
     }
 }

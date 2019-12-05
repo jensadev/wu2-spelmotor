@@ -24,9 +24,8 @@ class Rock
     {
         if (keys.KeyG) {
             let rocks = state.rocks + 1;
-            console.log("GRAB ROCK ZOG ZOG " + rocks);
             let filtered = state.actors.filter(a => a != this);
-            return new State(state.level, filtered, state.status, state.score, rocks);
+            return new State(state.level, filtered, state.status, state.score, rocks, state.health);
         }
         return state;
     }
@@ -36,5 +35,4 @@ class Rock
         let newPos = this.pos.plus(this.speed.times(time));
         return new Rock(newPos, this.speed);
     }
-    
 }

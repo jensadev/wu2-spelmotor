@@ -38,9 +38,6 @@ class Canvas {
             width: this.width / scale,
             height: this.height / scale
         };
-
-        // this.prevX = 0;
-        // this.prevY = 0;
     }
 
     updateViewport = function(state)
@@ -71,7 +68,7 @@ class Canvas {
         let xEnd = Math.ceil(left + width);
         let yStart = Math.floor(top);
         let yEnd = Math.ceil(top + height);
-      
+
         for (let y = yStart; y < yEnd; y++) {
             for (let x = xStart; x < xEnd; x++) {
                 let tile = level.layout[y][x];
@@ -79,8 +76,8 @@ class Canvas {
                     let screenX = (x - left) * scale;
                     let screenY = (y - top) * scale;
 
-                    if(tile !== undefined) {
-                        if(this.colorMode) {
+                    if (tile !== undefined) {
+                        if (this.colorMode) {
                             this.mapCtx.fillStyle = sources[tile].color;
                             this.mapCtx.fillRect(screenX, screenY, scale, scale);    
                         } else {
@@ -110,9 +107,7 @@ class Canvas {
         this.bgCtx.fillRect(0, 0, this.width, this.height);
         let _top = (height - top) * 32;
         let _left = left * 32;
-        // this.bgCtx.fillStyle = "pink";
 
-        // this.bgCtx.fillRect(500, 200, 200, 200);
         // this.bgCtx.drawImage(sources.mountain.image, 512, _top + 128, sources.mountain.width, sources.mountain.height);
         // this.bgCtx.drawImage(sources.mountain.image, 128, _top + 128, sources.mountain.width, sources.mountain.height);
         // this.bgCtx.drawImage(sources.mountains.image, left + 64, _top + 128, sources.mountains.width, sources.mountains.height);
@@ -139,24 +134,26 @@ class Canvas {
     drawUi = function(state)
     {
         if (state.status == "won" || state.status == "lost") {
+            this.uiCtx.clearRect(0, 0, 200, 200);
             this.uiCtx.fillStyle = "black";
             this.uiCtx.font = '40px sans-serif';
             this.uiCtx.textAlign = "center";
-            this.uiCtx.fillText(state.status, width / 2, height / 2 - 40);
+            this.uiCtx.fillText("You " + state.status + ", press space to continue", width / 2, height / 2 - 40);
         } else {
-            this.uiCtx.clearRect(0, 0, 80, 80);
+            this.uiCtx.clearRect(0, 0, 300, 100);
             this.uiCtx.fillStyle = "black";
             this.uiCtx.font = '20px sans-serif';
-            this.uiCtx.fillText(state.score, 20, 20);        
+            this.uiCtx.fillText("100/" + state.health, 20, 20);
+            this.uiCtx.font = '14px sans-serif';
+            this.uiCtx.fillText("Lives: " + lives, 20, 40);
+            this.uiCtx.fillText("Hearts: " + state.score + "/" + state.itemCount, 20, 60);
         }
     }
 
     clear()
     {
-        //this.bgLayer.remove();
         this.mapLayer.remove();
         this.actorsLayer.remove();
-        //this.uiLayer.remove();
     }
 
     clearDisplay = function(ctx) {
@@ -171,16 +168,18 @@ class Canvas {
             let x = (actor.pos.x - this.viewport.left) * scale;
             let y = (actor.pos.y - this.viewport.top) * scale;
             let tileY = 0;
-            let tileX = 1; 
+            let tileX = 0; 
             if (actor.type == "player") {
                 this.drawPlayer(actor, x, y, width, height, rocks);
             } else if (actor.type == "enemy") {
                 let tile = Math.floor(Date.now() / 60) % 4;
 
                 tileX = tile * sources.enemy.width;
+
                 if (actor.delta < 0) {
                     tileY = 1;
                 }
+
                 tileY = tileY * sources.enemy.height;
                 this.actorsCtx.drawImage(sources.enemy.image, tileX, tileY, sources.enemy.width, sources.enemy.height, x, y, width, height);
                 actor.prevX = x;
@@ -196,7 +195,7 @@ class Canvas {
                 } else {
                     this.actorsCtx.drawImage(sources[actor.type].image, 
                                             tileX, tileY,
-                                            width, height,
+                                            sources[actor.type].width, sources[actor.type].height,
                                             x, y, 
                                             width, height);
                 }
@@ -206,12 +205,6 @@ class Canvas {
 
     drawPlayer = function(player, x, y, width, height, rocks)
     {
-        // let playerOverlap = 4;
-        // width += playerOverlap * 1;
-        // height += playerOverlap * 3;
-        // x -= playerOverlap;
-        // y -= playerOverlap;
-
         let tile = 1;
         let jump = 0;
 
@@ -254,10 +247,10 @@ class Canvas {
                 fx, y + 40,
                 16, 16);
         }
-
     }
 
-    flipHorizontally = function(ctx, around) {
+    flipHorizontally = function(ctx, around)
+    {
         ctx.translate(around, 0);
         ctx.scale(-1, 1);
         ctx.translate(-around, 0);
