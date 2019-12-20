@@ -1,17 +1,37 @@
+/* Spelcanvasets storlek och spelets mått i pixlar */
 let width = 1024;
 let height = 768;
+
+/*
+ * Spelets skala, varje pixel i källkartan kommer att multipliceras med scale värdet.
+ * Testa att både zooma ut och in spelet med att ändra detta.
+ */ 
 let scale = 32;
+
+/* Några spelvariabler */
 let level = 0;
 let lives = 3; // horrible global
+let gravity = 24;
 
+/* Vilka keys som vi ska tracka för att styra spelet */
+let arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp", "Space", "KeyW", "KeyA", "KeyD", "KeyG"]);
+
+/*
+ * För att testa spelet med färger om du saknar texturer så
+ * kan du sätta detta till true. Spelet kommer då rita ut färger istället,
+ * testa!
+ */
+let debugColorMode = false;
+
+/*
+ * Nedan följer kod för att ladda in spelets bilder.
+ * Rör inte så mycket här nedanför
+ */
 let images = [];
 
 let offCanvas = document.createElement('canvas');
 let offCtx = offCanvas.getContext('2d');
 let body = document.getElementsByTagName("body")[0];
-
-let arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp", "Space", "KeyW", "KeyA", "KeyD", "KeyG"]);
-let gravity = 24;
 
 function loadImages(sources, callback) {
     let loadedImages = 0;
@@ -49,6 +69,7 @@ loadImages(sources, function() {
 
 async function runGame(plans)
 {
+    // offcanvas kod men laggar för mycket vid load
     // let offMapCtx = new OffscreenCanvas(sources.map.image.width, sources.map.image.height).getContext('2d');
     // let status = await runLevel(new Level(plans, offMapCtx, levelKey));
     offCanvas.width = plans.width;
@@ -57,13 +78,16 @@ async function runGame(plans)
     let status = await runLevel(new Level(plans, offCtx, levelKey));
 
     if (status == "won") {
-        console.log("You won");
-        level++;
+        console.log("You won " + level);
+        // Se till att vi inte laddar någon karta som inte finns, index start 0
+        if (level < maps.length - 1)
+            level++;
     } else if (status == "lost") {
         lives--;
         console.log("Slain");
     }
 
+    // När vi antingen vunnit kartan eller förlorat så vänta på space för att starta om.
     window.addEventListener("keydown", function temp(e) {
         if (e.code == "Space") {
             if (lives == 0) {
@@ -83,7 +107,7 @@ function runLevel(level) {
     console.log(level);
     let stage = document.getElementById('stage');
     stage.setAttribute("style", "width:" + width + "px;");
-    let display = new Canvas(width, height, stage, level, false); // sätt true för färglänge, så du kan testa utan texturer
+    let display = new Canvas(width, height, stage, level, debugColorMode); // sätt true för färglänge, så du kan testa utan texturer
     let state = State.start(level);
     console.log(state);
     return new Promise(resolve => {
