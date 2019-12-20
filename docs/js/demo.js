@@ -3,8 +3,12 @@
  * uppbyggnad.
  */
 
- // I levelKey anger du vilka färger som ska mappas till saker i spelet
-const levelKey = {
+/*
+ * I levelKey anger du vilka färger som ska mappas till saker i spelet
+ * statiska objekt som inte är kopplad till en klass skrivs som strängar
+ * ananras skriver du inte klassens namn
+ */
+  const levelKey = {
     "0,0,0": "empty",
     "255,255,0": "grass",
     "0,255,0": Player,

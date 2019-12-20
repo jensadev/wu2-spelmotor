@@ -69,9 +69,16 @@ Om färgerna inte är mappade så kommer kartan misslyckas med att laddas. Kolla
 Gå nu in i demo.js och ändra kartan.
 Ladda spelet och håll tummarna.
 
-## Ett nytt spelobject
+## Ett nytt spelobjekt
 
 Kopiera filen för Item klassen. Döp om hänvisningarna från Item till Smile.
 I demo.js sp lägger du sedan till en färg samt en hänvisning till Smile klassen.
 Provkör nu med debugColorMode satt till true. Lägg sedan till en hänvisning i
 sources till smile.png spriten.
+
+Fungerar din smile, prova med att ändra storleken.
+
+### En fiende
+
+I klassen Enemy finns koden för att lägga till en fiende i spelet. Prova att lägga till den på din demokarta,
+lägg till en färg som ska mappas till fienden i levelKey, lägg till fienden i sources (du kan använda spriten enemy.png)
