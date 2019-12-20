@@ -7,11 +7,11 @@ Vill du läsa mer se kapitel:
 * https://eloquentjavascript.net/16_game.html
 * https://eloquentjavascript.net/17_canvas.html
 
-License från boken och på denna kod, https://creativecommons.org/licenses/by-nc/3.0/legalcode
+Licens från boken och på denna kod, https://creativecommons.org/licenses/by-nc/3.0/legalcode
 
 ![Map image](https://raw.githubusercontent.com/jensnti/wu2-spelmotor/master/docs/img/maps/cavedude_map.png)
 
-##Struktur
+## Struktur
 
     docs/
         css/
