@@ -7,7 +7,7 @@ Vill du läsa mer se kapitel:
 * https://eloquentjavascript.net/16_game.html
 * https://eloquentjavascript.net/17_canvas.html
 
-![Map image](https://raw.githubusercontent.com/jensnti/wu2-spelmotor/master/docs/img/maps/map1.png)
+![Map image](https://raw.githubusercontent.com/jensnti/wu2-spelmotor/master/docs/img/maps/cavedude_map.png)
 
 ##Struktur
 
